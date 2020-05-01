@@ -1,12 +1,12 @@
-
+PVector PLAYER1_POSITION = new PVector();
+//PVector PLAYER2_POSITION = new PVector();
 
 void setup(){
   size(600, 600);
-  drawField();
 }
 
 void draw() {
-  
+    drawField();
 }
 
 void drawField() {
@@ -59,6 +59,7 @@ float origenY = padding_y_top;
     vertex(v1_horizontal.x + (ancho) - 1, v1_horizontal.y + (largo/6));
   endShape();
   genDottedLine(origenX, origenY + (largo * 15/16), ancho * 3/4);
+  PLAYER1_POSITION = movePlayer(origenX, ancho, largo,PLAYER1_POSITION);//Debe ir dentro de push/pop matrix para que no se salgo del campo
   popMatrix();
   
   scoreBoard(origenX,origenY, ancho, largo);
@@ -87,8 +88,23 @@ void scoreBoard(float origenX, float origenY, float ancho, float largo){
 
 public void genDottedLine(float x, float y, float ancho) {
     int aux_x = (int)x;
-    print(ancho);
    for(int i = 0 ; i<(aux_x + ancho + 40); i+=10){
       ellipse (aux_x + i,y,1,1);  
    } 
+}
+
+PVector movePlayer(float origenX, float ancho, float largo, PVector player1_position) {
+   float rectSize = width * 1/16;
+   PLAYER1_POSITION.x = player1_position.x;
+   PLAYER1_POSITION.y = player1_position.y;
+   //PLAYER2_POSITION.y = posY;
+   if(mouseX > origenX && mouseX < origenX + (ancho - rectSize) && mouseY > (largo*.53) && mouseY < largo){
+     rect(mouseX, mouseY, rectSize, 10);
+     player1_position.x = mouseX;
+     player1_position.y = mouseY;
+   } else {
+     rect(PLAYER1_POSITION.x, PLAYER1_POSITION.y, rectSize, 10);
+   }
+   
+   return player1_position;
 }
