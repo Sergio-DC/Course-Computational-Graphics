@@ -35,11 +35,23 @@ class Player implements Observer{
        rect(lastPosX, lastPosY, this.ancho, this.alto);
      }
      pelota.listenerCollisionPlayer(this);
-     pelota.listenerCollisionWall();
   }
   
   @Override
-  public void update(Observable o, Object value) {
-     print("Es el turno de: " + (String) value); 
+  public void update(Observable o, Object val) {
+     if(((Pelota)val).fueraDelCampo) {//La pelota en este punto ya salio del campo de juego
+         if(((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
+             print("Entre 1");
+             if(this.nombre.equals("B"))//Se suma el punto a B
+                 this.score += 1;
+         } else { //Si era el turno de B pero fallo
+           print("Entre 1");
+           if(this.nombre.equals("A"))//Se suma el punto a A
+             this.score += 1;
+         }
+     } else { // La pelota fue golpeada por un jugador
+       if( ((Pelota)val).estadoTurno.equals("A"))
+         print("Es el turno de: " + ((Pelota)val).estadoTurno); 
+     }     
   }
 }

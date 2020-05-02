@@ -18,7 +18,7 @@ void setup(){
   player1 = new Player(PLAYER1_POSITION,"A",PLAYER1_COLOR, 0);
   player2 = new Player(PLAYER2_POSITION,"B",PLAYER2_COLOR, 0);
   //Colocamos los jugadores en la cancha
-  cancha = new Cancha(player1, player2);
+  cancha = new Cancha(player1, player2, pelota);
   //Los jugadores se suscriben a los eventos emitidos por la pelota (Patron Observer)
   pelota.addObserver(player1);
   pelota.addObserver(player2);
@@ -27,27 +27,10 @@ void setup(){
 
 void draw() {
     background(200);
-    cancha.dibujarCancha();
-}
-
-void scoreBoard(float origenX, float origenY, float ancho){
-   int score1 = 0;
-   int score2 = 0;
-   float desfaseX = 20;
-   float desfaseY = 50;
-    
-   String score_this1 = Integer.toString(score1);
-   String score_this2 = Integer.toString(score2);
-   textSize(32);
-   fill(255,0,0);
-   textAlign(RIGHT);
-   text(score_this1, origenX - desfaseX, origenY + desfaseY);
-   text("B", origenX - desfaseX, origenY + (desfaseY*2));
-   
-   fill(0,0,255);
-   textAlign(LEFT);
-   text(score_this2, origenX + ancho + desfaseX, origenY + desfaseY);
-   text("B", origenX + ancho + desfaseX, origenY + (desfaseY*2));
+    if (keyPressed && key == 'p') {
+      dibujarScore();
+    } else
+      cancha.dibujarCancha();
 }
 
 void keyPressed() {
@@ -67,4 +50,11 @@ void keyPressed() {
       player2.position.x -= 25;
     if (key == 'l')
       player2.position.x += 25;
+}
+
+void dibujarScore() {
+   textSize(32);
+   text("Player1 : " + player1.score, width/2, height/2);
+   text("Player2 : " + player2.score, width/2, height/2 + 50);
+   
 }

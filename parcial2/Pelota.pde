@@ -9,6 +9,7 @@ class Pelota extends Observable {
   float ancho;
   int[] color_pelota;
   String estadoTurno;//Nos indica que jugador puede pegarle a la pelota, dos valores posibles {"A", "B"}
+  boolean fueraDelCampo;//Indica si la bandera esta dentro(false) o fuera(true) del campo
   float speedX, speedY;
   
   public Pelota(PVector posicion, int velocidad, int [] color_pelota) {
@@ -17,6 +18,7 @@ class Pelota extends Observable {
      this.velocidad = velocidad;
      this.isUp = true;
      this.color_pelota = color_pelota;
+     this.fueraDelCampo = false;
      speedX = random(1, velocidad);
      speedY = -random(1, velocidad); 
   }
@@ -41,7 +43,7 @@ class Pelota extends Observable {
           this.color_pelota[1] = 0;
           this.color_pelota[2] = 255;
           setChanged();
-          notifyObservers(this.estadoTurno);
+          notifyObservers(this);
         } else {
           speedX = speedX * -1;
           speedY = speedY * -1;
@@ -51,7 +53,7 @@ class Pelota extends Observable {
            this.color_pelota[1] = 135;
            this.color_pelota[2] = 66;
            setChanged();
-           notifyObservers(this.estadoTurno);
+           notifyObservers(this);
         }
       } 
    
@@ -90,4 +92,17 @@ class Pelota extends Observable {
          isUp = false;
       }
    }
+   /**
+    * @param coordX representa el punto inicial en X donde se encuentra el limite del campo de juego
+    * @param coordY representa el punto inicial en Y donde se encuentra el limite del campo de juego
+    * @param ancho representa el ancho del campo juego
+    */
+   public void listenerOutOfField(float coordY) { 
+       if(this.posicion.y > coordY && !this.fueraDelCampo) {
+            this.fueraDelCampo = true;
+            setChanged();
+            notifyObservers(this);
+       }
+   }
+
 }
