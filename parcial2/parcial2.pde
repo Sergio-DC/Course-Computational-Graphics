@@ -1,5 +1,10 @@
+import java.util.Observable;
+import java.util.Observer;
+
 Player player1, player2;
 Pelota pelota;
+int [] COLOR_PLAYER1 = new int[] {0,0,255};
+int [] COLOR_PLAYER2 = new int[] {254, 135, 66};
 int VELOCIDAD_BOLA = 2;
 float diam = 10;
 float x, y, speedX, speedY;//Variables para la pelota
@@ -14,15 +19,21 @@ void setup(){
   background(200);
   size(600, 600);
   
+  //Observable
   PVector BALL_POSITION = new PVector(width/2, height/2);
-  pelota = new Pelota(BALL_POSITION, VELOCIDAD_BOLA);
+  pelota = new Pelota(BALL_POSITION, VELOCIDAD_BOLA, new int[] {0,0,255});
   speedX = random(1, VELOCIDAD_BOLA);
-  speedY = -random(1, VELOCIDAD_BOLA);  
-
-  PVector this1_POSITION = new PVector(width * .35,height/2 + 25);  
-  PVector this2_POSITION = new PVector(width * .60,height/2 + 25);
-  player1 = new Player(this1_POSITION,new int[] {0,0,255}, 0);
-  player2 = new Player(this2_POSITION, new int[] {254, 135, 66}, 0);
+  speedY = -random(1, VELOCIDAD_BOLA); 
+  //Observers
+  PVector PLAYER1_POSITION = new PVector(width * .35,height/2 + 25);  
+  PVector PLAYER2_POSITION = new PVector(width * .60,height/2 + 25);
+  player1 = new Player(PLAYER1_POSITION,"A",COLOR_PLAYER1, 0);
+  player2 = new Player(PLAYER2_POSITION,"B",COLOR_PLAYER2, 0);
+  
+  pelota.addObserver(player1);
+  pelota.addObserver(player2);
+  pelota.estadoTurno = "A";
+   
 }
 
 void draw() {
@@ -138,15 +149,17 @@ public void genDottedLine(float x, float y, float ancho) {
    } 
 }
 
-class Player {
+class Player implements Observer{
   PVector position;
+  String nombre;
   float ancho;
   float alto;
   int [] rgb_color = new int[3];
   int score;
   
-  public Player(PVector position,int[] rgb_color, int score) {
+  public Player(PVector position,String nombre,int[] rgb_color, int score) {
     this.position = position;
+    this.nombre = nombre;
     this.ancho = width * 1/16;
     this.alto = 11;
     this.rgb_color = rgb_color;
@@ -173,26 +186,33 @@ class Player {
      pelota.listenerCollisionPlayer(this);
      pelota.listenerCollisionWall();
   }
+  
+  public void update(Observable o, Object value) {
+     print("Es el turno de: " + (String) value); 
+  }
 }
 
-class Pelota {
+class Pelota extends Observable {
   PVector posicion;
   float diam;
   int velocidad;
   boolean isUp = true;
   float origenX, origenY;
   float ancho;
+  int[] color_pelota;
+  String estadoTurno;//Nos indica que jugador puede pegarle a la pelota
   
-  public Pelota(PVector posicion, int velocidad) {
+  public Pelota(PVector posicion, int velocidad, int [] color_pelota) {
      this.posicion = posicion;
      this.diam = 10;
      this.velocidad = velocidad;
      this.isUp = true;
+     this.color_pelota = color_pelota;
   }
   
   public void listenerCollisionPlayer(Player player) {
      noStroke();
-     fill(253, 118, 58);
+     fill(color_pelota[0],color_pelota[1],color_pelota[2]);
      ellipse(this.posicion.x, this.posicion.y, diam, diam);
      this.posicion.x += speedX;
      this.posicion.y += speedY;
@@ -202,6 +222,21 @@ class Pelota {
         speedX = speedX * -1;
         speedY = speedY * -1;
         isUp = true;
+        if (player.nombre.equals("B")){
+          print("Entre B");
+          this.estadoTurno = "A";
+          this.color_pelota[0] = 0;
+          this.color_pelota[1] = 0;
+          this.color_pelota[2] = 255;
+          notifyObservers(this.estadoTurno);
+        } else {
+          print("Entre A");
+           this.estadoTurno = "B";
+           this.color_pelota[0] = 254;
+           this.color_pelota[1] = 135;
+           this.color_pelota[2] = 66;
+           notifyObservers(this.estadoTurno);
+        }
       } 
    
    }
@@ -215,7 +250,6 @@ class Pelota {
           speedY = -random(1, VELOCIDAD_BOLA);//Hacia Arriba
           this.posicion.x += speedX;
         } else if (!isUp){
-          print("eNTRE");
           speedX = 1 * random(1, VELOCIDAD_BOLA);
           speedY = random(1, VELOCIDAD_BOLA);//Hacia Abajo
           this.posicion.x += speedX; 
