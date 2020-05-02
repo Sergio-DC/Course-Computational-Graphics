@@ -1,11 +1,22 @@
-PVector PLAYER1_POSITION = new PVector();
-//PVector PLAYER2_POSITION = new PVector();
+PVector[] PLAYER1_BALL_POSITION;
+float diam = 10;
+float x, y, speedX, speedY;
+boolean isClockWise = false;
+boolean isUp = true;
+
+
 
 void setup(){
   size(600, 600);
+  PLAYER1_BALL_POSITION = new PVector[2];
+  PLAYER1_BALL_POSITION[0] = new PVector(100,100);
+  PLAYER1_BALL_POSITION[1] = new PVector(100, 150);
+  speedX = random(3, 5);
+  speedY = random(3, 5);
 }
 
 void draw() {
+ 
     drawField();
 }
 
@@ -59,7 +70,7 @@ float origenY = padding_y_top;
     vertex(v1_horizontal.x + (ancho) - 1, v1_horizontal.y + (largo/6));
   endShape();
   genDottedLine(origenX, origenY + (largo * 15/16), ancho * 3/4);
-  PLAYER1_POSITION = movePlayer(origenX, ancho, largo,PLAYER1_POSITION);//Debe ir dentro de push/pop matrix para que no se salgo del campo
+  PLAYER1_BALL_POSITION = movePlayer(origenX, origenY,ancho, largo,PLAYER1_BALL_POSITION);//Debe ir dentro de push/pop matrix para que no se salgo del campo
   popMatrix();
   
   scoreBoard(origenX,origenY, ancho, largo);
@@ -93,18 +104,72 @@ public void genDottedLine(float x, float y, float ancho) {
    } 
 }
 
-PVector movePlayer(float origenX, float ancho, float largo, PVector player1_position) {
-   float rectSize = width * 1/16;
-   PLAYER1_POSITION.x = player1_position.x;
-   PLAYER1_POSITION.y = player1_position.y;
+PVector [] movePlayer(float origenX, float origenY, float ancho, float largo, PVector[] player1_position) {
+   float playerWidth = width * 2/16;
+   float playerHeight = 11;
+   PLAYER1_BALL_POSITION[0].x = player1_position[0].x;
+   PLAYER1_BALL_POSITION[0].y = player1_position[0].y;
    //PLAYER2_POSITION.y = posY;
-   if(mouseX > origenX && mouseX < origenX + (ancho - rectSize) && mouseY > (largo*.53) && mouseY < largo){
-     rect(mouseX, mouseY, rectSize, 10);
-     player1_position.x = mouseX;
-     player1_position.y = mouseY;
+   if(mouseX > origenX && mouseX < origenX + (ancho - playerWidth) && mouseY > (largo*.53) && mouseY < largo){
+     rect(mouseX, mouseY, playerWidth, 10);
+     player1_position[0].x = mouseX;
+     player1_position[0].y = mouseY;
    } else {
-     rect(PLAYER1_POSITION.x, PLAYER1_POSITION.y, rectSize, 10);
+     rect(PLAYER1_BALL_POSITION[0].x, PLAYER1_BALL_POSITION[0].y, playerWidth, playerHeight);
    }
+   noStroke();
+   fill(253, 118, 58);
+   ellipse(PLAYER1_BALL_POSITION[1].x, PLAYER1_BALL_POSITION[1].y, diam, diam);
+   PLAYER1_BALL_POSITION[1].x += speedX;
+   PLAYER1_BALL_POSITION[1].y += speedY;
+   // if ball hits player, invert X direction
+   if ( PLAYER1_BALL_POSITION[1].x > mouseX && PLAYER1_BALL_POSITION[1].x < (mouseX + playerWidth) && 
+         PLAYER1_BALL_POSITION[1].y > (mouseY - playerHeight) && PLAYER1_BALL_POSITION[1].y < (mouseY + playerHeight) ) {
+      speedX = speedX * -1;
+      speedY = speedY * -1;
+      isUp = true;
+    } 
+   
+   // if ball hits wall, change direction of X
+  if (PLAYER1_BALL_POSITION[1].x < origenX) {
+    /*if(!isClockWise)
+      isClockWise = true;
+    else
+      isClockWise = false;*/
+    
+    if(isUp) {
+      speedX = 1 * random(4, 8);
+      speedY = -random(3, 6);//Hacia Arriba
+      PLAYER1_BALL_POSITION[1].x += speedX;
+    } else if (!isUp){
+      speedX = 1 * random(4, 8);
+      speedY = random(3, 6);//Hacia Abajo
+      PLAYER1_BALL_POSITION[1].x += speedX; 
+    }
+  }
+  if (PLAYER1_BALL_POSITION[1].x > (origenX + ancho)) {
+    /*if(!isClockWise)
+      isClockWise = false;
+    else
+      isClockWise = true;*/
+    
+    if(isUp) {
+      speedX = -1 * random(4, 8);
+      speedY = -1 * random(3, 6);//Hacia Arriba
+      PLAYER1_BALL_POSITION[1].x += speedX;
+      isClockWise = false;
+    }else{
+      speedX = -1 * random(4, 8);
+      speedY = 1 * random(3, 6);//Hacia Abajo
+      PLAYER1_BALL_POSITION[1].x += speedX;
+    }
+  }
+  
+  // if ball hits up or down, change direction of Y   
+  if (PLAYER1_BALL_POSITION[1].y < origenY) {
+    speedY = 1 * random(3,6);
+     isUp = false;
+  }
    
    return player1_position;
 }
