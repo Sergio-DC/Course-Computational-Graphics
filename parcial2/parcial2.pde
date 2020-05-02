@@ -1,24 +1,29 @@
-PVector[] PLAYER1_BALL_POSITION, PLAYER2_BALL_POSITION;
+PVector PLAYER1_POSITION, PLAYER2_POSITION, BALL_POSITION;
+int VELOCIDAD_BOLA = 2;
 float diam = 10;
 float x, y, speedX, speedY;//Variables para la pelota
 boolean isUp = true;
 boolean keyLeft, keyRight, keyUp, keyDown;
 boolean keyLeft2, keyRight2, keyUp2, keyDown2,keyRest;
-
-
+boolean safeZoneRight = true;//si es verdad el jugador no ha salido del campo de juego por el lateral derecho
+boolean safeZoneLeft = true;//si es verdad el jugador no ha salido del campo de juego por el lateral izquierdo
+float lastPosX, lastPosY;
 
 void setup(){
+  background(200);
   size(600, 600);
-  PLAYER1_BALL_POSITION = new PVector[2];
-  PLAYER1_BALL_POSITION[0] = new PVector(100,100);
-  PLAYER1_BALL_POSITION[1] = new PVector(100, 150);
+
+  PLAYER1_POSITION = new PVector(width/2,height/2 + 25);  
+  PLAYER2_POSITION = new PVector(width/2,height/2 + 25);
+  BALL_POSITION = new PVector(100, 150);
   speedX = random(3, 5);
   speedY = random(3, 5);  
 }
 
 void draw() {
- 
+     background(200);
     drawField();
+    //print("SafeZoneRigth: ", safeZoneRight);
 }
 
 void drawField() {
@@ -29,16 +34,13 @@ float largo = height - (padding_y_top * 2);
 float origenX = padding_x;
 float origenY = padding_y_top;
 
- 
   fill(150);
-  rect(origenX, origenY, ancho, largo);
-  
+  rect(origenX, origenY, ancho, largo);//Base para la cancha de SQUASH
   pushMatrix();
   fill(0,255,0);
   translate(15,15);
   scale(0.95);
-  //Este va encima de otro rect
-  rect(origenX, origenY, ancho, largo);
+  rect(origenX, origenY, ancho, largo); //Cancha de Squash
   
   //Dibujar Lineas Delimitadoras
   float punto_medio_y = ( origenY + (origenY + largo) ) / 2;
@@ -71,13 +73,144 @@ float origenY = padding_y_top;
     vertex(v1_horizontal.x + (ancho) - 1, v1_horizontal.y + (largo/6));
   endShape();
   genDottedLine(origenX, origenY + (largo * 15/16), ancho * 3/4);
-  PLAYER1_BALL_POSITION = movePlayer1(origenX, origenY,ancho, largo,PLAYER1_BALL_POSITION);//Debe ir dentro de push/pop matrix para que no se salgo del campo
-  PLAYER2_BALL_POSITION = movePlayer2(origenX, origenY,ancho, largo,PLAYER2_BALL_POSITION);
+  PLAYER1_POSITION = movePlayer(origenX, origenY,ancho, largo,PLAYER1_POSITION);//Debe ir dentro de push/pop matrix para que no se salgo del campo
+  PLAYER2_POSITION = movePlayer(origenX, origenY,ancho, largo,PLAYER2_POSITION);
   popMatrix();
   
   scoreBoard(origenX,origenY, ancho, largo);
-  
 }
+
+PVector movePlayer(float origenX, float origenY, float ancho, float largo, PVector PLAYER_POSITION) {
+   float playerWidth = width * 1/16;
+   float playerHeight = 11;
+   
+   strokeWeight(5);
+   point(origenX, 100);
+   point(origenX + ancho , 100);
+   if(PLAYER_POSITION.x > (origenX - playerWidth) && PLAYER_POSITION.x < origenX + ancho
+   && PLAYER_POSITION.y > (largo*.53) && PLAYER_POSITION.y < largo){//Esta dentro de la cancha
+     rect(PLAYER_POSITION.x, PLAYER_POSITION.y, playerWidth, 10);
+     PLAYER_POSITION.x = PLAYER_POSITION.x;
+     PLAYER_POSITION.y = PLAYER_POSITION.y;
+     lastPosX = PLAYER_POSITION.x;
+     lastPosY = PLAYER_POSITION.y;
+   } else {
+     /*if(lastPosX < origenX) {
+       print("Entre 1");
+       safeZoneLeft = false;
+       safeZoneRight = true;
+     } else if(lastPosX > (origenX + ancho)) {
+       safeZoneLeft = true;
+       safeZoneRight= false;
+       print("Entre 2");
+     }*/
+     rect(lastPosX, lastPosY, playerWidth, playerHeight);
+   }
+   noStroke();
+   fill(253, 118, 58);
+   ellipse(BALL_POSITION.x, BALL_POSITION.y, diam, diam);
+   BALL_POSITION.x += speedX;
+   BALL_POSITION.y += speedY;
+   // if ball hits player, invert X directiondd
+   if ( BALL_POSITION.x >= PLAYER_POSITION.x && BALL_POSITION.x <= (PLAYER_POSITION.x + playerWidth) && 
+         BALL_POSITION.y >= (PLAYER_POSITION.y - playerHeight) && BALL_POSITION.y <= (PLAYER_POSITION.y + playerHeight) ) {
+      speedX = speedX * -1;
+      speedY = speedY * -1;
+      isUp = true;
+    } 
+   
+   //Listener del Muro Izquierdo
+  if (BALL_POSITION.x < origenX){ 
+    if(isUp) {
+      speedX = 1 * random(1, VELOCIDAD_BOLA);
+      speedY = -random(1, VELOCIDAD_BOLA);//Hacia Arriba
+      BALL_POSITION.x += speedX;
+    } else if (!isUp){
+      speedX = 1 * random(1, VELOCIDAD_BOLA);
+      speedY = random(1, VELOCIDAD_BOLA);//Hacia Abajo
+      BALL_POSITION.x += speedX; 
+    }
+  }
+  //Listener del muro derecho
+  if (BALL_POSITION.x > (origenX + ancho)) {    
+    if(isUp) {
+      speedX = -1 * random(1, VELOCIDAD_BOLA);
+      speedY = -1 * random(1, VELOCIDAD_BOLA);//Hacia Arriba
+      BALL_POSITION.x += speedX;
+    }else{
+      speedX = -1 * random(1, VELOCIDAD_BOLA);
+      speedY = 1 * random(1, VELOCIDAD_BOLA);//Hacia Abajo
+      BALL_POSITION.x += speedX;
+    }
+  }
+  
+  // if ball hits up or down, change direction of Y   
+  if (BALL_POSITION.y < origenY) {
+    speedY = 1 * random(1,VELOCIDAD_BOLA);
+    BALL_POSITION.y += speedY;
+     isUp = false;
+  }
+   
+   return PLAYER_POSITION;
+}
+
+
+
+void keyPressed() {
+    if (key == 'w')
+      //if (safeZone)
+         PLAYER1_POSITION.y -= 20;
+    if (key == 's')
+      //if (safeZone)
+         PLAYER1_POSITION.y += 20;
+    if (key == 'a')
+        PLAYER1_POSITION.x -= 25;
+      /*if (safeZoneLeft) {
+        PLAYER1_BALL_POSITION[0].x -= 25;
+      } else {
+        PLAYER1_BALL_POSITION[0].x += 10;
+        safeZoneLeft = true;
+      }*/
+    if (key == 'd')
+      PLAYER1_POSITION.x += 25;
+      /*if (safeZoneRight) {
+        PLAYER1_BALL_POSITION[0].x += 25;
+      } else {
+        PLAYER1_BALL_POSITION[0].x -= 10;        
+        safeZoneRight = true;
+      }*/
+    if (key == 'i')
+      PLAYER2_POSITION.y -= 20;
+    if (key == 'k')
+      PLAYER2_POSITION.y += 20;
+    if (key == 'j')
+      PLAYER2_POSITION.x -= 25;
+    if (key == 'l')
+      PLAYER2_POSITION.x += 25;
+    if (key == 'r')
+      keyRest = true;
+}
+/*void keyReleased() {
+
+    if (key == 'w')
+  
+    if (key == 's')
+      PLAYER1_BALL_POSITION[0].y += 10;
+    if (key == 'a')
+      PLAYER1_BALL_POSITION[0].x -= 30;
+    if (key == 'd')
+      PLAYER1_BALL_POSITION[0].x += 30; 
+    if (key == 'i')
+      keyUp2 = false;
+    if (key == 'k')
+      keyDown2 = false;
+    if (key == 'j')
+      keyLeft2 = false;
+    if (key == 'l')
+      keyRight2 = false;
+    if (key == 'r')
+      keyRest = false;
+}*/
 
 void scoreBoard(float origenX, float origenY, float ancho, float largo){
  int score1 = 0;
@@ -104,108 +237,4 @@ public void genDottedLine(float x, float y, float ancho) {
    for(int i = 0 ; i<(aux_x + ancho + 40); i+=10){
       ellipse (aux_x + i,y,1,1);  
    } 
-}
-
-PVector [] movePlayer1(float origenX, float origenY, float ancho, float largo, PVector[] player1_position) {
-   float playerWidth = width * 2/16;
-   float playerHeight = 11;
-   PLAYER1_BALL_POSITION[0].x = player1_position[0].x;
-   PLAYER1_BALL_POSITION[0].y = player1_position[0].y;
-   //PLAYER2_POSITION.y = posY;
-   if(player1_position[0].x > player1_position[0].x && player1_position[0].x < origenX + (ancho - playerWidth) 
-   && player1_position[0].y > (largo*.53) && player1_position[0].y < largo){
-     rect(mouseX, mouseY, playerWidth, 10);
-     player1_position[0].x = mouseX;
-     player1_position[0].y = mouseY;
-   } else {
-     rect(PLAYER1_BALL_POSITION[0].x, PLAYER1_BALL_POSITION[0].y, playerWidth, playerHeight);
-   }
-   noStroke();
-   fill(253, 118, 58);
-   ellipse(PLAYER1_BALL_POSITION[1].x, PLAYER1_BALL_POSITION[1].y, diam, diam);
-   PLAYER1_BALL_POSITION[1].x += speedX;
-   PLAYER1_BALL_POSITION[1].y += speedY;
-   // if ball hits player, invert X direction
-   if ( PLAYER1_BALL_POSITION[1].x >= player1_position[0].x && PLAYER1_BALL_POSITION[1].x <= (player1_position[0].x + playerWidth) && 
-         PLAYER1_BALL_POSITION[1].y >= (player1_position[0].y - playerHeight) && PLAYER1_BALL_POSITION[1].y <= (player1_position[0].y + playerHeight) ) {
-      speedX = speedX * -1;
-      speedY = speedY * -1;
-      isUp = true;
-    } 
-   
-   // if ball hits wall, change direction of X
-  if (PLAYER1_BALL_POSITION[1].x < origenX){ 
-    if(isUp) {
-      speedX = 1 * random(4, 8);
-      speedY = -random(3, 6);//Hacia Arriba
-      PLAYER1_BALL_POSITION[1].x += speedX;
-    } else if (!isUp){
-      speedX = 1 * random(4, 8);
-      speedY = random(3, 6);//Hacia Abajo
-      PLAYER1_BALL_POSITION[1].x += speedX; 
-    }
-  }
-  if (PLAYER1_BALL_POSITION[1].x > (origenX + ancho)) {    
-    if(isUp) {
-      speedX = -1 * random(4, 8);
-      speedY = -1 * random(3, 6);//Hacia Arriba
-      PLAYER1_BALL_POSITION[1].x += speedX;
-    }else{
-      speedX = -1 * random(4, 8);
-      speedY = 1 * random(3, 6);//Hacia Abajo
-      PLAYER1_BALL_POSITION[1].x += speedX;
-    }
-  }
-  
-  // if ball hits up or down, change direction of Y   
-  if (PLAYER1_BALL_POSITION[1].y < origenY) {
-    speedY = 1 * random(3,6);
-     isUp = false;
-  }
-   
-   return player1_position;
-}
-
-
-
-void keyPressed() {
-    if (key == 'w')
-       PLAYER1_BALL_POSITION[0].y -= 10;
-    if (key == 's')
-       PLAYER1_BALL_POSITION[0].y += 10;
-    if (key == 'a')
-      PLAYER1_BALL_POSITION[0].x -= 30; 
-    if (key == 'd')
-      PLAYER1_BALL_POSITION[0].x += 30; 
-    if (key == 'i')
-      keyUp2 = true;
-    if (key == 'k')
-      keyDown2 = true;
-    if (key == 'j')
-      keyLeft2 = true;
-    if (key == 'l')
-      keyRight2 = true;
-    if (key == 'r')
-      keyRest = true;
-}
-void keyReleased() {
-
-    if (key == 'w')
-      PLAYER1_BALL_POSITION[0].y -= 10;
-    if (key == 's')
-      PLAYER1_BALL_POSITION[0].y += 10;
-    if (key == 'a')
-      PLAYER1_BALL_POSITION[0].x -= 30;
-    if (key == 'd')
-      PLAYER1_BALL_POSITION[0].x += 30; 
-    if (key == 'i')
-      keyUp2 = false;
-    if (key == 'k')
-      keyDown2 = false;
-    if (key == 'j')
-      keyLeft2 = false;
-    if (key == 'l')
-      keyRight2 = false;
-    if (key == 'r')
-      keyRest = false;
 }
