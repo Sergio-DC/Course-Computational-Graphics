@@ -3,7 +3,7 @@ public class Cancha {
   float padding_y_top = 20;
   float ancho = width - (padding_x * 2);
   float largo = height - (padding_y_top * 2);
-  float origenX = padding_x;
+  float muroIzquierdo = padding_x;
   float origenY = padding_y_top;
   float limiteCampoY = origenY + (largo * 15/16);
   float speedX, speedY;
@@ -14,30 +14,32 @@ public class Cancha {
   public Cancha(Player player1, Player player2, Pelota pelota) {
     this.player1 = player1;
     this.player2 = player2;
-    this.pelota = pelota;
-    speedX = random(1, VELOCIDAD_BOLA);
-    speedY = -random(1, VELOCIDAD_BOLA); 
+    this.pelota = pelota; 
   }
 
   public void dibujarCancha(){
+    background(200);
     fill(150);
-    rect(origenX, origenY, ancho, largo);//Base para la cancha de SQUASH
+    rect(muroIzquierdo, origenY, ancho, largo);//Base para la cancha de SQUASH
     pushMatrix();
     fill(0,255,0);
     translate(15,15);
     scale(0.95);
-    rect(origenX, origenY, ancho, largo); //Cancha de Squashs    
+    rect(muroIzquierdo, origenY, ancho, largo); //Cancha de Squashs    
     dibujarDelimitaciones();
-    pelota.origenX = origenX; 
+    pelota.muroIzquierdo = muroIzquierdo; 
     pelota.origenY = origenY;
     pelota.ancho = ancho;
     //Debe ir dentro de push/pop matrix para que no se salgo del campo
-    player1.movePlayer(origenX, ancho, largo, pelota);
-    player2.movePlayer(origenX, ancho, largo, pelota);
+    player1.movePlayer(muroIzquierdo, ancho, largo, pelota);
+    player2.movePlayer(muroIzquierdo, ancho, largo, pelota);
+    pelota.listenerCollisionPlayer(player1);
+    pelota.listenerCollisionPlayer(player2);
     pelota.listenerCollisionWall();
     pelota.listenerOutOfField(limiteCampoY);
+    pelota.dibujarPelota();
     popMatrix();
-    scoreBoard(origenX,origenY, ancho);
+    scoreBoard(muroIzquierdo,origenY, ancho);
   }
   
   void scoreBoard(float origenX, float origenY, float ancho){
@@ -57,12 +59,12 @@ public class Cancha {
   }
   private void dibujarDelimitaciones() {
     float punto_medio_y = ( origenY + (origenY + largo) ) / 2;
-    float punto_medio_x = (origenX + (origenX + ancho) ) / 2;
+    float punto_medio_x = (muroIzquierdo + (muroIzquierdo + ancho) ) / 2;
     strokeWeight(10);
     //Linea Horizontal
     PVector v1_horizontal , v2_horizontal;
-    v1_horizontal = new PVector(origenX, punto_medio_y);
-    v2_horizontal = new PVector(origenX + ancho, punto_medio_y);
+    v1_horizontal = new PVector(muroIzquierdo, punto_medio_y);
+    v2_horizontal = new PVector(muroIzquierdo + ancho, punto_medio_y);
     strokeWeight(3);
     stroke(255,0,0);
     line(v1_horizontal.x, v1_horizontal.y, v2_horizontal.x, v2_horizontal.y);
@@ -85,7 +87,7 @@ public class Cancha {
       vertex(v1_horizontal.x + (ancho * 3/4) - 1, v1_horizontal.y + (largo/6));
       vertex(v1_horizontal.x + (ancho) - 1, v1_horizontal.y + (largo/6));
     endShape();
-    genDottedLine(origenX, limiteCampoY, ancho * 3/4);
+    genDottedLine(muroIzquierdo, limiteCampoY, ancho * 3/4);
   }
   
   

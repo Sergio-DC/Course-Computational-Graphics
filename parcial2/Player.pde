@@ -7,11 +7,12 @@ class Player implements Observer{
   float alto;
   int [] rgb_color = new int[3];
   int score;
+  float lastPosX, lastPosY;
   
   public Player(PVector position,String nombre,int[] rgb_color, int score) {
     this.position = position;
     this.nombre = nombre;
-    this.ancho = width * 1/16;
+    this.ancho = width * 3/16;
     this.alto = 11;
     this.rgb_color = rgb_color;
     this.score = score;
@@ -34,18 +35,16 @@ class Player implements Observer{
      } else {
        rect(lastPosX, lastPosY, this.ancho, this.alto);
      }
-     pelota.listenerCollisionPlayer(this);
+     //pelota.listenerCollisionPlayer(this);
   }
   
   @Override
   public void update(Observable o, Object val) {
      if(((Pelota)val).fueraDelCampo) {//La pelota en este punto ya salio del campo de juego
          if(((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
-             print("Entre 1");
              if(this.nombre.equals("B"))//Se suma el punto a B
                  this.score += 1;
          } else { //Si era el turno de B pero fallo
-           print("Entre 1");
            if(this.nombre.equals("A"))//Se suma el punto a A
              this.score += 1;
          }
