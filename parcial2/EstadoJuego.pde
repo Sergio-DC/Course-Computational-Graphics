@@ -1,5 +1,6 @@
 public class EstadoJuego {
     boolean finDelJuego;
+    boolean volver_a_sacar;
     boolean jugador_A_saca;
     boolean isPaused;
     Cancha cancha;
@@ -9,12 +10,13 @@ public class EstadoJuego {
    public EstadoJuego() {
      isPaused = false;
      this.finDelJuego = false;
+     this.volver_a_sacar = false;
      this.jugador_A_saca = true;
    }
    
    public void configInitJuego() {
       //Observable
-     pelota = new Pelota(new PVector(width/2, height/2), new PVector(1,1), new int[] {0,0,255});
+     pelota = new Pelota(new PVector(width/2, height/2), new PVector(2,2), new int[] {0,0,255});
      //Observers  
      PVector PLAYER1_POSITION = new PVector(width * .35,height/2 + 25);//Punto de Spawn del Player 1
      PVector PLAYER2_POSITION = new PVector(width * .60,height/2 + 25);//Punto de Spawn del Player 2

@@ -5,7 +5,7 @@ class Pelota extends Observable {
   float diam;
   PVector velocidad;
   boolean isUp;
-  float muroIzquierdo, origenY;
+  float limiteIzq, limiteDer, limiteTop;
   float ancho;
   int[] color_pelota;
   String estadoTurno;//Nos indica que jugador puede pegarle a la pelota, dos valores posibles {"A", "B"}
@@ -22,15 +22,17 @@ class Pelota extends Observable {
   
   public void listenerCollisionPlayer(Player player) {
      this.posicion.add(this.velocidad);
+     //println(this.posicion);
      // Si la pelota golpea al jugador se invierte la direccion de esta
      if ( this.posicion.x > player.position.x && this.posicion.x < (player.position.x + player.ancho) && 
-           this.posicion.y > (player.position.y)
-           && player.nombre.equals(this.estadoTurno)) {
+           this.posicion.y > (player.alto * .53) && this.posicion.y < (player.alto)
+           ) {//&& player.nombre.equals(this.estadoTurno)//
+        
         isUp = true;
         if (player.nombre.equals("B")){
           this.velocidad.x = this.velocidad.x * -1;
           this.velocidad.y = this.velocidad.y * -1;
-          //print("Entre B");
+          print("Entre B");
           this.estadoTurno = "A";
           this.color_pelota[0] = 0;
           this.color_pelota[1] = 0;
@@ -40,9 +42,9 @@ class Pelota extends Observable {
             notifyObservers(this);
           }
         } else {
-          this.velocidad.x = this.velocidad.x * -1;
+          this.velocidad.x = this.velocidad.x * 1;
           this.velocidad.y = this.velocidad.y * -1;
-          //print("Entre A");
+          print("Entre A");
            this.estadoTurno = "B";
            this.color_pelota[0] = 254;
            this.color_pelota[1] = 135;
@@ -52,13 +54,13 @@ class Pelota extends Observable {
              notifyObservers(this);
            }
         }
-      } 
+      }
    
    }
    
    public void listenerCollisionWall() {
        //Listener del Muro Izquierdo
-      if (this.posicion.x < muroIzquierdo){ 
+      if (this.posicion.x < limiteIzq){ 
         if(isUp) {
           this.velocidad.x = this.velocidad.x * -1;
           this.velocidad.y = this.velocidad.y * -1;//Hacia Arriba
@@ -73,7 +75,7 @@ class Pelota extends Observable {
         this.posicion.add(this.velocidad);
       }
       //Listener del muro derecho
-      if (this.posicion.x > (muroIzquierdo + ancho)) {    
+      if (this.posicion.x > (limiteIzq + ancho)) {    
         if(isUp) {
           this.velocidad.x = this.velocidad.x * -1;
           this.velocidad.y = this.velocidad.y * -1;//Hacia Arriba
@@ -88,8 +90,9 @@ class Pelota extends Observable {
       }    
       // Si la pelota golpea el muro de enfrente la pelota cambia su direccion
       //en sentido Contrario
-      if (this.posicion.y < origenY) {
+      if (this.posicion.y < limiteTop) {
         this.velocidad.y = this.velocidad.y * -1;//Hacia Abajo
+        this.velocidad.x = this.velocidad.x * -3;//Hacia Abajo
         //this.posicion.y += speedY;
          isUp = false;
       }
@@ -113,6 +116,12 @@ class Pelota extends Observable {
       noStroke();
       fill(color_pelota[0],color_pelota[1],color_pelota[2]);
       ellipse(this.posicion.x, this.posicion.y, diam, diam);
+   }
+   
+   public void definirLimites(float limiteIzq, float limiteDer, float limiteTop) {
+       this.limiteIzq = limiteIzq;
+       this.limiteDer = limiteDer;
+       this.limiteTop = limiteTop;
    }
 
 }

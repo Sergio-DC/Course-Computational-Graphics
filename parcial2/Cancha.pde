@@ -4,8 +4,8 @@ public class Cancha {
   float ancho = width - (padding_x * 2);
   float largo = height - (padding_y_top * 2);
   float muroIzquierdo = padding_x;
-  float origenY = padding_y_top;
-  float limiteCampoY = origenY + (largo * 15/16);
+  float muroTop = padding_y_top;
+  float limiteCampoY = muroTop + (largo * 15/16);
   float speedX, speedY;
   Player player1;
   Player player2;
@@ -14,22 +14,21 @@ public class Cancha {
   public Cancha(Player player1, Player player2, Pelota pelota) {
     this.player1 = player1;
     this.player2 = player2;
-    this.pelota = pelota; 
+    this.pelota = pelota;
+    //Le dice a la pelota que solo puede moverse dentro del campo
+    pelota.definirLimites(muroIzquierdo, muroIzquierdo + ancho, muroTop);
   }
 
   public void dibujarCancha(){
     background(200);
     fill(150);
-    rect(muroIzquierdo, origenY, ancho, largo);//Base para la cancha de SQUASH
+    rect(muroIzquierdo, muroTop, ancho, largo);//Base para la cancha de SQUASH
     pushMatrix();
     fill(0,255,0);
     translate(15,15);
     scale(0.95);
-    rect(muroIzquierdo, origenY, ancho, largo); //Cancha de Squashs    
+    rect(muroIzquierdo, muroTop, ancho, largo); //Cancha de Squashs    
     dibujarDelimitaciones();
-    pelota.muroIzquierdo = muroIzquierdo; 
-    pelota.origenY = origenY;
-    pelota.ancho = ancho;
     //Debe ir dentro de push/pop matrix para que no se salgo del campo
     player1.movePlayer(muroIzquierdo, ancho, largo, pelota);
     player2.movePlayer(muroIzquierdo, ancho, largo, pelota);
@@ -39,7 +38,7 @@ public class Cancha {
     pelota.listenerOutOfField(limiteCampoY);
     pelota.dibujarPelota();
     popMatrix();
-    scoreBoard(muroIzquierdo,origenY, ancho);
+    scoreBoard(muroIzquierdo,muroTop, ancho);
   }
   
   void scoreBoard(float origenX, float origenY, float ancho){
@@ -58,7 +57,7 @@ public class Cancha {
      text("B", origenX + ancho + desfaseX, origenY + (desfaseY*2));
   }
   private void dibujarDelimitaciones() {
-    float punto_medio_y = ( origenY + (origenY + largo) ) / 2;
+    float punto_medio_y = ( muroTop + (muroTop + largo) ) / 2;
     float punto_medio_x = (muroIzquierdo + (muroIzquierdo + ancho) ) / 2;
     strokeWeight(10);
     //Linea Horizontal

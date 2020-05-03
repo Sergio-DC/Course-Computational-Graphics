@@ -13,7 +13,7 @@ class Player implements Observer{
     this.position = position;
     this.nombre = nombre;
     this.ancho = width * 3/16;
-    this.alto = 11;
+    this.alto = .5;
     this.rgb_color = rgb_color;
     this.score = score;
   }
@@ -44,13 +44,17 @@ class Player implements Observer{
          if(((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
              if(this.nombre.equals("B"))//Se suma el punto a B
                  this.score += 1;
+             juego.jugador_A_saca = false;
          } else { //Si era el turno de B pero fallo
            if(this.nombre.equals("A"))//Se suma el punto a A
              this.score += 1;
+            juego.jugador_A_saca = true;
          }
+         juego.volver_a_sacar = true;
      } else { // La pelota fue golpeada por un jugador
-       if( ((Pelota)val).estadoTurno.equals("A"))
-         print("Es el turno de: " + ((Pelota)val).estadoTurno); 
+       if( ((Pelota)val).estadoTurno.equals("A")){
+   
+       }
      }     
   }
 }
