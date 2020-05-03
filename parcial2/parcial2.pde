@@ -2,7 +2,7 @@ EstadoJuego juego;
 boolean pantallaDeInicio = true;
 
 void setup(){
-  size(800, 800);
+size(600, 600);
   juego = new EstadoJuego();
   juego.configInitJuego();
 }

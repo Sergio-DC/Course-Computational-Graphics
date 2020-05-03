@@ -3,39 +3,38 @@ import java.util.Observable;
 class Pelota extends Observable {
   PVector posicion;
   float diam;
-  PVector velocidad;
   boolean isUp;
   float limiteIzq, limiteDer, limiteTop;
-  float ancho;
+  int velocidad;
   int[] color_pelota;
+  float speedX, speedY;
   String estadoTurno;//Nos indica que jugador puede pegarle a la pelota, dos valores posibles {"A", "B"}
   boolean fueraDelCampo;//Indica si la bandera esta dentro(false) o fuera(true) del campo
-  float speedX, speedY;
-  
-  public Pelota(PVector posicion, PVector velocidad, int [] color_pelota) {
+  public Pelota(PVector posicion, int velocidad, int [] color_pelota) {
      this.posicion = posicion;
      this.diam = 20;
      this.velocidad = velocidad;
      this.isUp = true;
      this.color_pelota = color_pelota;
      this.fueraDelCampo = false;
-     speedX = random(-1, 2);
-     speedY = -random(1, 1); 
+     speedX = -2;
+     speedY =  -2;
   }
   
   public void listenerCollisionPlayer(Player player) {
-     this.posicion.add(this.velocidad);
-     //println(this.posicion);
+      strokeWeight(5);
+        fill(0);
+        ellipse(player.position.x, player.position.y, 10, 10);//Pto IZQ
+        fill(255);
+        ellipse(player.position.x + player.ancho, player.position.y, 10, 10);//Pto DER*/
      // Si la pelota golpea al jugador se invierte la direccion de esta
-     if ( this.posicion.x > player.position.x && this.posicion.x < (player.position.x + player.ancho) && 
-           this.posicion.y > (player.position.y + player.alto) && this.posicion.y < (player.position.y + player.alto)
-           ) {//&& player.nombre.equals(this.estadoTurno)//
-        
+     if ( this.posicion.x > player.position.x && this.posicion.x < (player.position.x + player.ancho)
+           && this.posicion.y > (player.position.y) /*&& this.posicion.y < (player.position.y + player.alto)*/
+           && player.nombre.equals(this.estadoTurno)) {
         isUp = true;
         if (player.nombre.equals("B")){
           speedX = speedX * random(-4, 4);
           speedY = speedY * -2;
-          //print("Entre B");
           this.estadoTurno = "A";
           this.color_pelota[0] = 0;
           this.color_pelota[1] = 0;
@@ -47,7 +46,6 @@ class Pelota extends Observable {
         } else {
           speedX = speedX * random(-4, 4);
           speedY = speedY * -2;
-          //print("Entre A");
            this.estadoTurno = "B";
            this.color_pelota[0] = 254;
            this.color_pelota[1] = 135;
@@ -57,49 +55,39 @@ class Pelota extends Observable {
              notifyObservers(this);
            }
         }
-      }
-   
+      }   
    }
    
    public void listenerCollisionWall() {
        //Listener del Muro Izquierdo
-      if (this.posicion.x < limiteIzq){ 
+      if (this.posicion.x < limiteIzq){
         if(isUp) {
-          this.velocidad.x = this.velocidad.x * -1;
-          this.velocidad.y = this.velocidad.y * -1;//Hacia Arriba
-          isUp= false;
-          //this.posicion.x += speedX;
+          speedX = 2;
+          speedY = -random(1, this.velocidad);//Hacia Arriba
+          this.posicion.x =  this.posicion.x + speedX;
         } else if (!isUp){
-          this.velocidad.x = this.velocidad.x * -1;
-          this.velocidad.y = this.velocidad.y * 1;//Hacia Abajo
-          isUp = false;
-          //this.posicion.x += speedX; 
+          speedX = 1 * random(1, this.velocidad);
+          speedY = random(1, this.velocidad);//Hacia Abajo
+          this.posicion.x += speedX; 
         }
-        this.posicion.add(this.velocidad);
-      }
-      //Listener del muro derecho
-      if (this.posicion.x > (limiteIzq + ancho)) {    
+      } else if (this.posicion.x > limiteDer) { //Listener del muro derecho   
         if(isUp) {
-          this.velocidad.x = this.velocidad.x * -1;
-          this.velocidad.y = this.velocidad.y * -1;//Hacia Arriba
-          isUp = false;
-          //this.posicion.x += speedX;
+          speedX = -1 * random(1, this.velocidad);
+          speedY = -1 * random(1, this.velocidad);//Hacia Arriba
+          this.posicion.x += speedX;
         }else{
-          this.velocidad.x = this.velocidad.x * -1;
-          this.velocidad.y = this.velocidad.y * 1;//Hacia Abajo
-          isUp = false;
-          //this.posicion.x += speedX;
+          speedX = -1 * random(1, this.velocidad);
+          speedY = 1 * random(1, this.velocidad);//Hacia Abajo
+          this.posicion.x += speedX;
         }
-      }    
+      }   
       // Si la pelota golpea el muro de enfrente la pelota cambia su direccion
       //en sentido Contrario
       if (this.posicion.y < limiteTop) {
-        this.velocidad.y = this.velocidad.y * -1;//Hacia Abajo
-        this.velocidad.x = this.velocidad.x * -3;//Hacia Abajo
-        //this.posicion.y += speedY;
+        speedY = 1 * random(1, this.velocidad);  //Hacia Abajo
+        this.posicion.y += speedY;
          isUp = false;
       }
-      this.posicion.add(this.velocidad);
    }
    /**
     * @param coordX representa el punto inicial en X donde se encuentra el limite del campo de juego
@@ -116,6 +104,8 @@ class Pelota extends Observable {
    }
    
    public void dibujarPelota(){
+      this.posicion.x = this.posicion.x + speedX;
+      this.posicion.y = this.posicion.y + speedY;
       noStroke();
       fill(color_pelota[0],color_pelota[1],color_pelota[2]);
       ellipse(this.posicion.x, this.posicion.y, diam, diam);

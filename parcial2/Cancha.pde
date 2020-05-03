@@ -14,6 +14,8 @@ public class Cancha {
     this.player1 = player1;
     this.player2 = player2;
     this.pelota = pelota;
+    //Le indica a la pelota hasta donde puede rebotar
+    pelota.definirLimites(muroIzquierdo,muroIzquierdo + ancho, muroTop);
   }
 
   public void dibujarCancha(){
@@ -26,6 +28,7 @@ public class Cancha {
     scale(0.95);
     rect(muroIzquierdo, muroTop, ancho, largo); //Cancha de Squashs    
     dibujarDelimitaciones();
+    pelota.dibujarPelota();
     //Debe ir dentro de push/pop matrix para que no se salgo del campo
     player1.movePlayer(muroIzquierdo, ancho, largo, pelota);
     player2.movePlayer(muroIzquierdo, ancho, largo, pelota);
@@ -33,7 +36,6 @@ public class Cancha {
     pelota.listenerCollisionPlayer(player2);
     pelota.listenerCollisionWall();
     pelota.listenerOutOfField(limiteCampoY);
-    pelota.dibujarPelota();
     popMatrix();
     scoreBoard(muroIzquierdo,muroTop, ancho);
   }

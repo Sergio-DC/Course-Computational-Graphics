@@ -12,7 +12,7 @@ class Player implements Observer{
   public Player(PVector position,String nombre,int[] rgb_color, int score) {
     this.position = position;
     this.nombre = nombre;
-    this.ancho = width * 1/16;
+    this.ancho = width * 2/16;
     this.alto = 11;
     this.rgb_color = rgb_color;
     this.score = score;
