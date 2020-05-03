@@ -10,6 +10,7 @@ class Pelota extends Observable {
   int[] color_pelota;
   String estadoTurno;//Nos indica que jugador puede pegarle a la pelota, dos valores posibles {"A", "B"}
   boolean fueraDelCampo;//Indica si la bandera esta dentro(false) o fuera(true) del campo
+  float speedX, speedY;
   
   public Pelota(PVector posicion, PVector velocidad, int [] color_pelota) {
      this.posicion = posicion;
@@ -18,6 +19,8 @@ class Pelota extends Observable {
      this.isUp = true;
      this.color_pelota = color_pelota;
      this.fueraDelCampo = false;
+     speedX = random(-1, 2);
+     speedY = -random(1, 1); 
   }
   
   public void listenerCollisionPlayer(Player player) {
@@ -25,14 +28,14 @@ class Pelota extends Observable {
      //println(this.posicion);
      // Si la pelota golpea al jugador se invierte la direccion de esta
      if ( this.posicion.x > player.position.x && this.posicion.x < (player.position.x + player.ancho) && 
-           this.posicion.y > (player.alto * .53) && this.posicion.y < (player.alto)
+           this.posicion.y > (player.position.y + player.alto) && this.posicion.y < (player.position.y + player.alto)
            ) {//&& player.nombre.equals(this.estadoTurno)//
         
         isUp = true;
         if (player.nombre.equals("B")){
-          this.velocidad.x = this.velocidad.x * -1;
-          this.velocidad.y = this.velocidad.y * -1;
-          print("Entre B");
+          speedX = speedX * random(-4, 4);
+          speedY = speedY * -2;
+          //print("Entre B");
           this.estadoTurno = "A";
           this.color_pelota[0] = 0;
           this.color_pelota[1] = 0;
@@ -42,9 +45,9 @@ class Pelota extends Observable {
             notifyObservers(this);
           }
         } else {
-          this.velocidad.x = this.velocidad.x * 1;
-          this.velocidad.y = this.velocidad.y * -1;
-          print("Entre A");
+          speedX = speedX * random(-4, 4);
+          speedY = speedY * -2;
+          //print("Entre A");
            this.estadoTurno = "B";
            this.color_pelota[0] = 254;
            this.color_pelota[1] = 135;

@@ -6,7 +6,6 @@ public class Cancha {
   float muroIzquierdo = padding_x;
   float muroTop = padding_y_top;
   float limiteCampoY = muroTop + (largo * 15/16);
-  float speedX, speedY;
   Player player1;
   Player player2;
   Pelota pelota;
@@ -15,8 +14,6 @@ public class Cancha {
     this.player1 = player1;
     this.player2 = player2;
     this.pelota = pelota;
-    //Le dice a la pelota que solo puede moverse dentro del campo
-    pelota.definirLimites(muroIzquierdo, muroIzquierdo + ancho, muroTop);
   }
 
   public void dibujarCancha(){
