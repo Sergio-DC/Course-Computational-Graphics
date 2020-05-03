@@ -29,7 +29,7 @@ class Pelota extends Observable {
         ellipse(player.position.x + player.ancho, player.position.y, 10, 10);//Pto DER*/
      // Si la pelota golpea al jugador se invierte la direccion de esta
      if ( this.posicion.x > player.position.x && this.posicion.x < (player.position.x + player.ancho)
-           && this.posicion.y > (player.position.y) /*&& this.posicion.y < (player.position.y + player.alto)*/
+           && this.posicion.y > (player.position.y) && this.posicion.y < (player.position.y + player.alto)
            && player.nombre.equals(this.estadoTurno)) {
         isUp = true;
         if (player.nombre.equals("B")){

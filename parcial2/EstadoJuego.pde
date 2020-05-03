@@ -32,6 +32,15 @@ public class EstadoJuego {
    public void correrJuego() {
        this.finDelJuego = false;
        cancha.dibujarCancha();
+      if(volver_a_sacar) {
+         delay(1000);
+         pelota.posicion.x = width/2 + 100;
+         pelota.posicion.y = height/2 - 50;
+         volver_a_sacar = false;
+         pelota.estadoTurno = (jugador_A_saca) ?  "B" : "A";
+          
+      }
+        
    }
    
    public void dibujarMenu() {

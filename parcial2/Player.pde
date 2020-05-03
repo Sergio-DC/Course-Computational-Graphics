@@ -40,21 +40,16 @@ class Player implements Observer{
   
   @Override
   public void update(Observable o, Object val) {
-     if(((Pelota)val).fueraDelCampo) {//La pelota en este punto ya salio del campo de juego
-         if(((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
-             if(this.nombre.equals("B"))//Se suma el punto a B
-                 this.score += 1;
-             juego.jugador_A_saca = false;
-         } else { //Si era el turno de B pero fallo
-           if(this.nombre.equals("A"))//Se suma el punto a A
-             this.score += 1;
-            juego.jugador_A_saca = true;
-         }
+     if(((Pelota)val).fueraDelCampo && this.nombre.equals("B") && ((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
+         ((Pelota)val).fueraDelCampo = false;             
+         this.score += 1;//Se suma el punto a B           
+         juego.jugador_A_saca = false;
          juego.volver_a_sacar = true;
-     } else { // La pelota fue golpeada por un jugador
-       if( ((Pelota)val).estadoTurno.equals("A")){
-   
-       }
-     }     
+     } else if(((Pelota)val).fueraDelCampo && this.nombre.equals("A") && ((Pelota)val).estadoTurno.equals("B")) {//Si era el turno de B pero fallo  
+           ((Pelota)val).fueraDelCampo = false;                                     
+           this.score += 1;//Se suma un punto a A            
+           juego.jugador_A_saca = true;
+           juego.volver_a_sacar = true;
+     }
   }
 }
