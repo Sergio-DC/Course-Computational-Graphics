@@ -35,8 +35,8 @@ class Pelota extends Observable {
            && player.nombre.equals(this.estadoTurno)) {
         isUp = true;
         if (player.nombre.equals("B")){
-          speedX = speedX * -1;
-          speedY = speedY * -1;
+          speedX = speedX * random(-4, 4);
+          speedY = speedY * -2;
           //print("Entre B");
           this.estadoTurno = "A";
           this.color_pelota[0] = 0;
@@ -45,8 +45,8 @@ class Pelota extends Observable {
           setChanged();
           notifyObservers(this);
         } else {
-          speedX = speedX * -1;
-          speedY = speedY * -1;
+          speedX = speedX * random(-4, 4);
+          speedY = speedY * -2;
           //print("Entre A");
            this.estadoTurno = "B";
            this.color_pelota[0] = 254;

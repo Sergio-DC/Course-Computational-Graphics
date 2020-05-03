@@ -15,7 +15,7 @@ public class Cancha {
     this.player1 = player1;
     this.player2 = player2;
     this.pelota = pelota;
-    speedX = random(1, VELOCIDAD_BOLA);
+    speedX = random(-1, 2);
     speedY = -random(1, VELOCIDAD_BOLA); 
   }
 
