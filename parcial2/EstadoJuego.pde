@@ -1,9 +1,12 @@
 Pelota pelota;
 public class EstadoJuego {
+    int PTS_MAX_TO_WIN = 0;
     boolean finDelJuego;
+    boolean ganoJugadorA;
     boolean volver_a_sacar;
     boolean jugador_A_saca;
     boolean isPaused;
+    Player ganador;
     Cancha cancha;
     Player player1, player2;
   
@@ -12,6 +15,7 @@ public class EstadoJuego {
      this.finDelJuego = false;
      this.volver_a_sacar = false;
      this.jugador_A_saca = true;
+     this.ganoJugadorA = false;
    }
    
    public void configInitJuego() {
@@ -29,7 +33,7 @@ public class EstadoJuego {
      pelota.addObserver(player2);
      pelota.estadoTurno = "A"; 
    }
-   public void correrJuego() {
+   void correrJuego() {
        this.finDelJuego = false;
        cancha.dibujarCancha();
       if(volver_a_sacar) {
@@ -38,7 +42,16 @@ public class EstadoJuego {
          pelota.posicion.y = height/2 - 50;
          volver_a_sacar = false;
          pelota.estadoTurno = (jugador_A_saca) ?  "B" : "A";
-          
+      }
+      
+      if(this.player1.score > PTS_MAX_TO_WIN) {        
+          this.finDelJuego = true;
+          this.ganador = player1;
+      }
+      
+      if(this.player2.score > PTS_MAX_TO_WIN) {
+         this.finDelJuego = true;
+         this.ganador = player2;
       }
         
    }
@@ -46,32 +59,44 @@ public class EstadoJuego {
    public void dibujarMenu() {
       background(0);
       fill(14, 247, 191 );
-      textSize(50);
-      text("Juego de Squash",225,50);
-      textSize(30);
-      text("Jugador 1 se mueve con:",45,150);
-      text("w: arriba",75,200);
-      text("s: abajo",75,250);
-      text("a: izquierda",75,300);
-      text("d: derecha",75,350);
-      text("Jugador 2 se mueve con:",45,400);
-      text("i: arriba",75,450);
-      text("k: abajo",75,500);
-      text("j: izquierda",75,550);
-      text("l: derecha",75,600);
+      textSize(40);
+      textAlign(CENTER);
+      text("Juego de Squash",width/2,50);
+      textSize(20);
+      text("Jugador 1 se mueve con:",width/2,100);
+      text("w: arriba",width/2,140);
+      text("s: abajo",width/2,180);
+      text("a: izquierda",width/2,220);
+      text("d: derecha",width/2,260);
+      text("Jugador 2 se mueve con:",width/2,300);
+      text("i: arriba",width/2,340);
+      text("k: abajo",width/2,380);
+      text("j: izquierda",width/2,420);
+      text("l: derecha",width/2,460);
       fill(255, 0, 0 );
-      text("Presiona SPACE para iniciar",45,650);
-      text("Presiona 'p' para pausar",45,700);
+      text("Presiona SPACE para iniciar",width/2, 500);
+      text("Presiona 'p' para pausar",width/2,540);
+   }
+   
+   public void dibujarGanador() {
+       background(0);
+       fill(14, 247, 191 );
+       textSize(30);
+       textAlign(CENTER);
+       text("El ganador es: " + this.ganador.nombre,width/2,50);
+       textAlign(CENTER);
+       text("Presiona 'm' para volver al menu",width/2,100);
    }
    
    public void dibujarPausa() {
       background(#f5bf42);
-      textSize(32);
       fill(0);
-      textAlign(RIGHT);
+      textAlign(CENTER);
+      textSize(40);
       text("Pausa", width/2, height/2 - 50);
-      text("Presiona SPACE para continuar...", width/2 + 225, height/2);
-      text("Presiona m para volver al menu...", width/2 + 225, height/2 + 50);
+      textSize(30);
+      text("Presiona SPACE para continuar...", width/2, height/2);
+      text("Presiona m para volver al menu...", width/2, height/2 + 50);
    }
    
    public void terminarJuego() {

@@ -8,23 +8,29 @@ size(600, 600);
 }
 
 void draw() {    
-    if(key == ' ' || !juego.finDelJuego) {//Correr Juego
-      pantallaDeInicio = false;
-      if(juego.finDelJuego)
-        juego.configInitJuego();
-      juego.correrJuego();
-      if(key == 'm')
-        juego.finDelJuego = true;
-    else if(key == 'p' || !juego.isPaused) {
-      if(juego.isPaused)
-        juego.isPaused = false;
-      juego.dibujarPausa();
-      juego.isPaused = true;
-    }
+    if(key == ' ' || (!juego.finDelJuego && !juego.isPaused) ) {//Correr Juego con SPACE
+        if(juego.isPaused)//La pausa sera falsa
+            juego.isPaused = false;
+        pantallaDeInicio = false;
+        if(juego.finDelJuego)
+            juego.configInitJuego();
+          if(!juego.isPaused)
+              juego.correrJuego();
+        if(key == 'm')
+          juego.finDelJuego = true;
+        else if(key == 'p') {
+          if(!juego.isPaused)//La pausa sera verdadera
+              juego.isPaused = true;
+          juego.dibujarPausa();
+          print("Entre");
+          
+        }
+    } else if(juego.finDelJuego && key != 'm') {//El juego ha terminado, alguien obtuvo 5 puntos
+        juego.dibujarGanador();
     } else if(key == 'm' || pantallaDeInicio) {//Salir/Menu   
-      if(!pantallaDeInicio)
-        juego.terminarJuego();
-      juego.dibujarMenu();
+        if(!pantallaDeInicio)
+          juego.terminarJuego();
+        juego.dibujarMenu();
     }
 }
 
