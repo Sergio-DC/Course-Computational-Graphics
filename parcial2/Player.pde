@@ -11,14 +11,13 @@ class Player implements Observer{
   float lastPosX, lastPosY;
   int partidasGanadas;
   
-  public Player(PVector position,String nombre,int[] rgb_color, int score, int partidasGanadas) {
+  public Player(PVector position,String nombre,int[] rgb_color, int score) {
     this.position = position;
     this.nombre = nombre;
     this.ancho = width * 2/16;
     this.alto = 11;
     this.rgb_color = rgb_color;
     this.score = score;
-    this.partidasGanadas = partidasGanadas;
   }
   
   void movePlayer(float origenX, float ancho, float largo) {
@@ -45,12 +44,14 @@ class Player implements Observer{
   public void update(Observable o, Object val) {
      if(((Pelota)val).fueraDelCampo && this.nombre.equals("B") && ((Pelota)val).estadoTurno.equals("A")) {//Si era el turno de A pero fallo
          ((Pelota)val).fueraDelCampo = false;             
-         this.score += 1;//Se suma el punto a B           
+         this.score += 1;//Se suma el punto a B
+         //print("B gano un punto");
          juego.jugador_A_saca = false;
          juego.volver_a_sacar = true;
      } else if(((Pelota)val).fueraDelCampo && this.nombre.equals("A") && ((Pelota)val).estadoTurno.equals("B")) {//Si era el turno de B pero fallo  
            ((Pelota)val).fueraDelCampo = false;                                     
-           this.score += 1;//Se suma un punto a A            
+           this.score += 1;//Se suma un punto a A
+           //print("A gano un punto");
            juego.jugador_A_saca = true;
            juego.volver_a_sacar = true;
      }

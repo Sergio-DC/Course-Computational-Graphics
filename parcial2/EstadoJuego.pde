@@ -16,18 +16,18 @@ public class EstadoJuego {
      this.jugador_A_saca = true;
      this.ganoJugadorA = false;
      crud_file = new CRUD_File(grafica);
-   }
-   
-   public void configInitJuego() {
-     //La primera pos del array tiene el num de partidas ganadas del jugador A
-     int [] partidas_ganadas = crud_file.readFile();
-     //Observable
-     pelota = new Pelota(new PVector(width/2, height/2), 2, new int[] {0,0,255});
      //Observers  
      PVector PLAYER1_POSITION = new PVector(width * .35,height/2 + 25);//Punto de Spawn del Player 1
      PVector PLAYER2_POSITION = new PVector(width * .60,height/2 + 25);//Punto de Spawn del Player 2
-     player1 = new Player(PLAYER1_POSITION,"A",new int[] {0,0,255}, 0, partidas_ganadas[0]);
-     player2 = new Player(PLAYER2_POSITION,"B",new int[] {254, 135, 66}, 0, partidas_ganadas[1]);
+     player1 = new Player(PLAYER1_POSITION,"A",new int[] {0,0,255}, 0);
+     player2 = new Player(PLAYER2_POSITION,"B",new int[] {254, 135, 66}, 0);
+   }
+   
+   public void configInitJuego() {
+     leerArchivo();
+     //Observable
+     pelota = new Pelota(new PVector(width/2, height/2), 4, new int[] {0,0,255});
+     
      //Colocamos los jugadores en la cancha
      cancha = new Cancha(player1, player2, pelota);
      //Los jugadores se suscriben a los eventos emitidos por la pelota (Patron Observer)
@@ -49,11 +49,13 @@ public class EstadoJuego {
       if(this.player1.score > PTS_MAX_TO_WIN) {        
           this.finDelJuego = true;
           this.ganador = player1;
+          this.ganador.partidasGanadas += 1;//Se incremena el numero de partidas ganadas de A
       }
       
       if(this.player2.score > PTS_MAX_TO_WIN) {
          this.finDelJuego = true;
          this.ganador = player2;
+         this.ganador.partidasGanadas += 1;//Se incremena el numero de partidas ganadas de A
       }
         
    }
@@ -89,7 +91,6 @@ public class EstadoJuego {
        text("El ganador es: " + this.ganador.nombre,width/2,50);
        textAlign(CENTER);
        text("Presiona 'm' para volver al menu",width/2,100);
-       crud_file.updateFile(player1, player2);
    }
    
    public void dibujarPausa() {
@@ -109,11 +110,24 @@ public class EstadoJuego {
      text("A: " + this.player1.partidasGanadas, width/2, height/2);
      text("B: " + this.player2.partidasGanadas, width/2, height/2 + height/2*.25);
   }
+  
+  public void actualizarArchivo() {
+      println("player1.partidasGanadas: " + player1.partidasGanadas);
+      println("player2.partidasGanadas: " + player2.partidasGanadas);
+     crud_file.updateFile(player1, player2); 
+  }
+  
+  public void leerArchivo() {
+     //La primera pos del array tiene el num de partidas ganadas del jugador B
+     int [] partidas_ganadas = crud_file.readFile();
+     player1.partidasGanadas = partidas_ganadas[1];
+     player2.partidasGanadas = partidas_ganadas[0]; 
+  }
    
    public void terminarJuego() {
       pelota = null;
-      player1 = null;
-      player2 = null;
+      player1.score = 0;
+      player2.score = 0;
       cancha = null;
       this.finDelJuego = true;
    }

@@ -5,6 +5,8 @@ public class CRUD_File {
     final String FILE_NAME = "squash.csv";
     final String COL_NAME_1 = "A";
     final String COL_NAME_2 = "B";
+    //static CRUD_File instance = new CRUD_File();
+    
     public CRUD_File() {}
     
     public CRUD_File(ListenerUpdatedFile listenerUpdatedFile) {
@@ -33,30 +35,11 @@ public class CRUD_File {
         table.addColumn(this.COL_NAME_2, Table.INT);
         
         TableRow newRow = table.addRow();
-        newRow.setInt(this.COL_NAME_1, player1.partidasGanadas);
+        newRow.setInt(this.COL_NAME_2, player1.partidasGanadas);
         newRow.setInt(this.COL_NAME_1, player2.partidasGanadas);
         
         saveTable(table, this.FILE_NAME);
    }
-    
-  public void witeFile(Player player) {
-        Table table = new Table();  
-        table.addColumn(this.COL_NAME_1);
-        table.addColumn(this.COL_NAME_1, Table.INT);
-        
-        TableRow newRow = table.addRow();
-        newRow.setString(this.COL_NAME_1, player.nombre);
-        //newRow.setInt(nombre_col2, player.);
-        
-        saveTable(table, this.FILE_NAME);
-  }
-  
-  /*public CRUD_File getInstance() {
-      if(this == null)
-          return new CRUD_File();
-      else
-        return this;
-  }*/
   
 }
 

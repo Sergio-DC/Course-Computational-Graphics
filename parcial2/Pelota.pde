@@ -17,8 +17,8 @@ class Pelota extends Observable {
      this.isUp = true;
      this.color_pelota = color_pelota;
      this.fueraDelCampo = false;
-     speedX = -2;
-     speedY =  -2;
+     speedX = -4;
+     speedY =  -4;
   }
   
   public void listenerCollisionPlayer(Player player) {
