@@ -9,6 +9,7 @@ public class EstadoJuego {
     Player ganador;
     Cancha cancha;
     Player player1, player2;
+    CRUD_File crud_file;
   
    public EstadoJuego() {
      isPaused = false;
@@ -16,22 +17,25 @@ public class EstadoJuego {
      this.volver_a_sacar = false;
      this.jugador_A_saca = true;
      this.ganoJugadorA = false;
+     crud_file = new CRUD_File(grafica);
    }
    
    public void configInitJuego() {
-      //Observable
+     //La primera pos del array tiene el num de partidas ganadas del jugador A
+     int [] partidas_ganadas = crud_file.readFile("A", "B", "squash.csv");
+     //Observable
      pelota = new Pelota(new PVector(width/2, height/2), 2, new int[] {0,0,255});
      //Observers  
      PVector PLAYER1_POSITION = new PVector(width * .35,height/2 + 25);//Punto de Spawn del Player 1
      PVector PLAYER2_POSITION = new PVector(width * .60,height/2 + 25);//Punto de Spawn del Player 2
-     player1 = new Player(PLAYER1_POSITION,"A",new int[] {0,0,255}, 0);
-     player2 = new Player(PLAYER2_POSITION,"B",new int[] {254, 135, 66}, 0);
+     player1 = new Player(PLAYER1_POSITION,"A",new int[] {0,0,255}, 0, partidas_ganadas[0]);
+     player2 = new Player(PLAYER2_POSITION,"B",new int[] {254, 135, 66}, 0, partidas_ganadas[1]);
      //Colocamos los jugadores en la cancha
      cancha = new Cancha(player1, player2, pelota);
      //Los jugadores se suscriben a los eventos emitidos por la pelota (Patron Observer)
      pelota.addObserver(player1);
      pelota.addObserver(player2);
-     pelota.estadoTurno = "A"; 
+     pelota.estadoTurno = "A";//El primero en pegarle a la pelota será el jugador A
    }
    void correrJuego() {
        this.finDelJuego = false;
@@ -83,6 +87,7 @@ public class EstadoJuego {
        fill(14, 247, 191 );
        textSize(30);
        textAlign(CENTER);
+       print("holaGanado;");
        text("El ganador es: " + this.ganador.nombre,width/2,50);
        textAlign(CENTER);
        text("Presiona 'm' para volver al menu",width/2,100);
@@ -98,6 +103,13 @@ public class EstadoJuego {
       text("Presiona SPACE para continuar...", width/2, height/2);
       text("Presiona m para volver al menu...", width/2, height/2 + 50);
    }
+   
+   public void drawPartidasGanadas(){
+     background(0);
+     textSize(32);
+     text("A: " + this.player1.partidasGanadas, width/2, height/2);
+     text("B: " + this.player2.partidasGanadas, width/2, height/2 + height/2*.25);
+  }
    
    public void terminarJuego() {
       pelota = null;

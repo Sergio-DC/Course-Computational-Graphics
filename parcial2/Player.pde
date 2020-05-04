@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.Observer;
 
 class Player implements Observer{
@@ -8,17 +9,19 @@ class Player implements Observer{
   int [] rgb_color = new int[3];
   int score;
   float lastPosX, lastPosY;
+  int partidasGanadas;
   
-  public Player(PVector position,String nombre,int[] rgb_color, int score) {
+  public Player(PVector position,String nombre,int[] rgb_color, int score, int partidasGanadas) {
     this.position = position;
     this.nombre = nombre;
     this.ancho = width * 2/16;
     this.alto = 11;
     this.rgb_color = rgb_color;
     this.score = score;
+    this.partidasGanadas = partidasGanadas;
   }
   
-  void movePlayer(float origenX, float ancho, float largo, Pelota pelota) {
+  void movePlayer(float origenX, float ancho, float largo) {
    
      strokeWeight(5);
      point(origenX, 100);

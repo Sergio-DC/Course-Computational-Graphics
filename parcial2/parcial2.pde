@@ -1,15 +1,22 @@
 EstadoJuego juego;
+Grafica grafica;
+CRUD_File crud_file;
 boolean pantallaDeInicio = true;
+boolean archivoEscrito = false;
 
 void setup(){
-size(600, 600);
+  size(1400, 1000);
+  
   juego = new EstadoJuego();
+  grafica = new Grafica();
   juego.configInitJuego();
+  
+  
 }
 
 void draw() {    
-    if(key == ' ' || (!juego.finDelJuego && !juego.isPaused) ) {//Correr Juego con SPACE
-        if(juego.isPaused)//La pausa sera falsa
+    if(key == ' ' || (!juego.finDelJuego && !juego.isPaused && !pantallaDeInicio) ) {//Correr Juego con SPACE
+        if(juego.isPaused)
             juego.isPaused = false;
         pantallaDeInicio = false;
         if(juego.finDelJuego)
@@ -21,17 +28,25 @@ void draw() {
         else if(key == 'p') {
           if(!juego.isPaused)//La pausa sera verdadera
               juego.isPaused = true;
-          juego.dibujarPausa();
-          print("Entre");
-          
+          juego.dibujarPausa();      
         }
-    } else if(juego.finDelJuego && key != 'm') {//El juego ha terminado, alguien obtuvo 5 puntos
+    } else if(juego.finDelJuego && key == ' ') {//El juego ha terminado, alguien ha obtenido 5 puntos
+        println("Mostrar Ganador de partida");
         juego.dibujarGanador();
-    } else if(key == 'm' || pantallaDeInicio) {//Salir/Menu   
+        if(!archivoEscrito) {
+            //crud_file.witeFile("player", "ganadas","squash.csv", juego.ganador);
+            archivoEscrito = true;
+        }
+    } else if(key == 'm' || pantallaDeInicio) {//Salir o ir al Menu   
         if(!pantallaDeInicio)
-          juego.terminarJuego();
+            juego.terminarJuego();
         juego.dibujarMenu();
+        if(key == 'n') {
+           print("Partidas Ganadas");
+           juego.drawPartidasGanadas();
+        }
     }
+    //grafica.pieChart(300);
 }
 
 void dibujarScore() {

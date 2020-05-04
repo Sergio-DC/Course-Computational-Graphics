@@ -30,8 +30,8 @@ public class Cancha {
     dibujarDelimitaciones();
     pelota.dibujarPelota();
     //Debe ir dentro de push/pop matrix para que no se salgo del campo
-    player1.movePlayer(muroIzquierdo, ancho, largo, pelota);
-    player2.movePlayer(muroIzquierdo, ancho, largo, pelota);
+    player1.movePlayer(muroIzquierdo, ancho, largo);
+    player2.movePlayer(muroIzquierdo, ancho, largo);
     pelota.listenerCollisionPlayer(player1);
     pelota.listenerCollisionPlayer(player2);
     pelota.listenerCollisionWall();
