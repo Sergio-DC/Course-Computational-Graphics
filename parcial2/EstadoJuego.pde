@@ -9,13 +9,15 @@ public class EstadoJuego {
     Cancha cancha;
     Player player1, player2;
     CRUD_File crud_file;
+    Grafica grafica;
   
    public EstadoJuego() {
      this.finDelJuego = false;
      this.volver_a_sacar = false;
      this.jugador_A_saca = true;
      this.ganoJugadorA = false;
-     crud_file = new CRUD_File(grafica);
+     crud_file = new CRUD_File();
+     grafica = new Grafica();
      //Observers  
      PVector PLAYER1_POSITION = new PVector(width * .35,height/2 + 25);//Punto de Spawn del Player 1
      PVector PLAYER2_POSITION = new PVector(width * .60,height/2 + 25);//Punto de Spawn del Player 2
@@ -38,10 +40,12 @@ public class EstadoJuego {
    void correrJuego() {
        this.finDelJuego = false;
        cancha.dibujarCancha();
-      if(volver_a_sacar) {
+      if(volver_a_sacar) {//Respawn de la pelota
          delay(1000);
-         pelota.posicion.x = width/2 + 100;
-         pelota.posicion.y = height/2 - 50;
+         pelota.posicion.x = width/2;
+         pelota.posicion.y = height/2;
+         pelota.speedX = random(-1, 2) * 6;
+         pelota.speedY =  -6;
          volver_a_sacar = false;
          pelota.estadoTurno = (jugador_A_saca) ?  "B" : "A";
       }
@@ -107,8 +111,17 @@ public class EstadoJuego {
    public void dibujarPartidasGanadas(){
      background(0);
      textSize(32);
-     text("A: " + this.player1.partidasGanadas, width/2, height/2);
-     text("B: " + this.player2.partidasGanadas, width/2, height/2 + height/2*.25);
+     grafica.pieChart(300, new Player[] {player1, player2});
+     fill(player1.rgb_color[0], player1.rgb_color[1], player1.rgb_color[2]);
+     ellipse(width/2 - 25, height - 150, 10, 10);
+
+     text("A: " + this.player1.partidasGanadas, width/2 + 5, height - 145);
+     fill(player2.rgb_color[0], player2.rgb_color[1], player2.rgb_color[2]);
+     ellipse(width/2 - 25, height - 100, 10, 10);
+      //textAlign(CENTER, TOP);
+     text("B: " + this.player2.partidasGanadas, width/2 + 5, height - 95);
+     fill(255);
+     text("Presiona 'm' para volver", width/2, height - 50);
   }
   
   public void actualizarArchivo() {

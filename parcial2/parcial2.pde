@@ -1,5 +1,4 @@
 EstadoJuego juego;
-Grafica grafica;
 boolean p1_menu_activo = true;
 boolean p2_grafico_activo = false;
 boolean p3_juego_activo = false;
@@ -11,12 +10,10 @@ boolean archivoEscrito = false;
 boolean archivoLeido = false;
 
 void setup(){
-  size(1400, 1000);
-  
+  size(600, 600);
   juego = new EstadoJuego();
-  grafica = new Grafica(); //<>//
-} //<>//
- //<>//
+}
+
 void draw() {     //<>//
     opcionTecla(); //<>//
      //<>//
@@ -40,21 +37,21 @@ void draw() {     //<>//
             archivoLeido = true;  //<>//
          } //<>//
          juego.dibujarPartidasGanadas(); //<>//
-     } else if(p4_finjuego_activo) {//Fin del Juego
-         juego.dibujarFinDeJuego();
-         if(!archivoEscrito) {
-             juego.actualizarArchivo(); //<>//
-             print("Archivo escrito"); //<>//
+     } else if(p4_finjuego_activo) {//Fin del Juego //<>//
+         juego.dibujarFinDeJuego(); //<>//
+         if(!archivoEscrito) { //<>//
+             juego.actualizarArchivo();
+             print("Archivo escrito");
              archivoEscrito = true;
          } //<>//
      } //<>// //<>// //<>// //<>// //<>//
-} //<>//
+}
  //<>//
 void dibujarScore() { //<>//
    textSize(32); //<>//
-   text("Player1 : ", width/2, height/2);
-   text("Player2 : ", width/2, height/2 + 50);
-   
+   text("Player1 : ", width/2, height/2); //<>//
+   text("Player2 : ", width/2, height/2 + 50); //<>//
+    //<>//
 }
 
 
