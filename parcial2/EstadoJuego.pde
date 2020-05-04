@@ -1,6 +1,6 @@
 Pelota pelota;
 public class EstadoJuego {
-    int PTS_MAX_TO_WIN = 0;
+    int PTS_MAX_TO_WIN = 4;
     boolean finDelJuego;
     boolean ganoJugadorA;
     boolean volver_a_sacar;
@@ -45,7 +45,7 @@ public class EstadoJuego {
          volver_a_sacar = false;
          pelota.estadoTurno = (jugador_A_saca) ?  "B" : "A";
       }
-      
+      println("score_1: " + player1.score + "   score_2: " + player2.score);
       if(this.player1.score > PTS_MAX_TO_WIN) {        
           this.finDelJuego = true;
           this.ganador = player1;
@@ -112,8 +112,8 @@ public class EstadoJuego {
   }
   
   public void actualizarArchivo() {
-      println("player1.partidasGanadas: " + player1.partidasGanadas);
-      println("player2.partidasGanadas: " + player2.partidasGanadas);
+      //println("player1.partidasGanadas: " + player1.partidasGanadas);
+      //println("player2.partidasGanadas: " + player2.partidasGanadas);
      crud_file.updateFile(player1, player2); 
   }
   
