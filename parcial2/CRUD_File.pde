@@ -2,40 +2,53 @@
 
 public class CRUD_File {
     ListenerUpdatedFile listenerUpdatedFile;
+    final String FILE_NAME = "squash.csv";
+    final String COL_NAME_1 = "A";
+    final String COL_NAME_2 = "B";
     public CRUD_File() {}
     
     public CRUD_File(ListenerUpdatedFile listenerUpdatedFile) {
         this.listenerUpdatedFile = listenerUpdatedFile;
     }
   
-    public int[] readFile(String nombre_col1, String nombre_col2, String fileName) {
+    public int[] readFile() {
         Table table;
-        table = loadTable(fileName, "header");  
+        table = loadTable(this.FILE_NAME, "header");  
         int juegosGanados_A = -1;
         int juegosGanados_B = -1;
         println(table.getRowCount() + " total rows in table");
         for (TableRow row : table.rows()) {
-          juegosGanados_A = row.getInt(nombre_col1);
-          println("ganA: " + juegosGanados_A);
-          juegosGanados_B = row.getInt(nombre_col2);
-          println("ganB: " + juegosGanados_B);
+          juegosGanados_A = row.getInt(this.COL_NAME_1);
+          juegosGanados_B = row.getInt(this.COL_NAME_2);
         }
         int [] array_juegos_ganados = new int[2];
         array_juegos_ganados[0] = juegosGanados_A;
         array_juegos_ganados[1] = juegosGanados_B;
         return array_juegos_ganados;
    }
-    
-  public void witeFile(String nombre_col1, String nombre_col2,String fileName, Player player) {
+   
+   public void updateFile(Player player1, Player player2) {
         Table table = new Table();  
-        table.addColumn(nombre_col1);
-        table.addColumn(nombre_col2, Table.INT);
+        table.addColumn(this.COL_NAME_1, Table.INT);
+        table.addColumn(this.COL_NAME_2, Table.INT);
         
         TableRow newRow = table.addRow();
-        newRow.setString(nombre_col1, player.nombre);
+        newRow.setInt(this.COL_NAME_1, player1.partidasGanadas);
+        newRow.setInt(this.COL_NAME_1, player2.partidasGanadas);
+        
+        saveTable(table, this.FILE_NAME);
+   }
+    
+  public void witeFile(Player player) {
+        Table table = new Table();  
+        table.addColumn(this.COL_NAME_1);
+        table.addColumn(this.COL_NAME_1, Table.INT);
+        
+        TableRow newRow = table.addRow();
+        newRow.setString(this.COL_NAME_1, player.nombre);
         //newRow.setInt(nombre_col2, player.);
         
-        saveTable(table, fileName);
+        saveTable(table, this.FILE_NAME);
   }
   
   /*public CRUD_File getInstance() {

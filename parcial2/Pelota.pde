@@ -95,8 +95,7 @@ class Pelota extends Observable {
     * @param ancho representa el ancho del campo juego
     */
    public void listenerOutOfField(float coordY) { 
-       if(this.posicion.y > coordY && !this.fueraDelCampo) {
-             print("!");
+       if(this.posicion.y > coordY && !this.fueraDelCampo) {  
             this.fueraDelCampo = true;
             setChanged();
             notifyObservers(this);

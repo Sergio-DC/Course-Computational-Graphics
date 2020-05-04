@@ -5,14 +5,12 @@ public class EstadoJuego {
     boolean ganoJugadorA;
     boolean volver_a_sacar;
     boolean jugador_A_saca;
-    boolean isPaused;
     Player ganador;
     Cancha cancha;
     Player player1, player2;
     CRUD_File crud_file;
   
    public EstadoJuego() {
-     isPaused = false;
      this.finDelJuego = false;
      this.volver_a_sacar = false;
      this.jugador_A_saca = true;
@@ -22,7 +20,7 @@ public class EstadoJuego {
    
    public void configInitJuego() {
      //La primera pos del array tiene el num de partidas ganadas del jugador A
-     int [] partidas_ganadas = crud_file.readFile("A", "B", "squash.csv");
+     int [] partidas_ganadas = crud_file.readFile();
      //Observable
      pelota = new Pelota(new PVector(width/2, height/2), 2, new int[] {0,0,255});
      //Observers  
@@ -80,17 +78,18 @@ public class EstadoJuego {
       fill(255, 0, 0 );
       text("Presiona SPACE para iniciar",width/2, 500);
       text("Presiona 'p' para pausar",width/2,540);
+      text("Presiona 'g' para ver partidas ganadas",width/2,580);
    }
    
-   public void dibujarGanador() {
+   public void dibujarFinDeJuego() {
        background(0);
        fill(14, 247, 191 );
        textSize(30);
        textAlign(CENTER);
-       print("holaGanado;");
        text("El ganador es: " + this.ganador.nombre,width/2,50);
        textAlign(CENTER);
        text("Presiona 'm' para volver al menu",width/2,100);
+       crud_file.updateFile(player1, player2);
    }
    
    public void dibujarPausa() {
@@ -104,7 +103,7 @@ public class EstadoJuego {
       text("Presiona m para volver al menu...", width/2, height/2 + 50);
    }
    
-   public void drawPartidasGanadas(){
+   public void dibujarPartidasGanadas(){
      background(0);
      textSize(32);
      text("A: " + this.player1.partidasGanadas, width/2, height/2);
@@ -117,6 +116,10 @@ public class EstadoJuego {
       player2 = null;
       cancha = null;
       this.finDelJuego = true;
+   }
+   
+   public void guardarEstadisiticas() {
+       crud_file.updateFile(this.player1, this.player2);
    }
 }
   

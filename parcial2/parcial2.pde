@@ -1,7 +1,12 @@
 EstadoJuego juego;
 Grafica grafica;
 CRUD_File crud_file;
-boolean pantallaDeInicio = true;
+boolean p1_menu_activo = true;
+boolean p2_grafico_activo = false;
+boolean p3_juego_activo = false;
+boolean p4_finjuego_activo = false;
+boolean p5_pausa_activo = false;
+
 boolean archivoEscrito = false;
 
 void setup(){
@@ -9,59 +14,44 @@ void setup(){
   
   juego = new EstadoJuego();
   grafica = new Grafica();
-  juego.configInitJuego();
-  
-  
-}
-
-void draw() {    
-    if(key == ' ' || (!juego.finDelJuego && !juego.isPaused && !pantallaDeInicio) ) {//Correr Juego con SPACE
-        if(juego.isPaused)
-            juego.isPaused = false;
-        pantallaDeInicio = false;
-        if(juego.finDelJuego)
-            juego.configInitJuego();
-          if(!juego.isPaused)
-              juego.correrJuego();
-        if(key == 'm')
-          juego.finDelJuego = true;
-        else if(key == 'p') {
-          if(!juego.isPaused)//La pausa sera verdadera
-              juego.isPaused = true;
-          juego.dibujarPausa();      
-        }
-    } else if(juego.finDelJuego && key == ' ') {//El juego ha terminado, alguien ha obtenido 5 puntos
-        println("Mostrar Ganador de partida");
-        juego.dibujarGanador();
-        if(!archivoEscrito) {
-            //crud_file.witeFile("player", "ganadas","squash.csv", juego.ganador);
-            archivoEscrito = true;
-        }
-    } else if(key == 'm' || pantallaDeInicio) {//Salir o ir al Menu   
-        if(!pantallaDeInicio)
-            juego.terminarJuego();
-        juego.dibujarMenu();
-        if(key == 'n') {
-           print("Partidas Ganadas");
-           juego.drawPartidasGanadas();
-        }
-    }
-    //grafica.pieChart(300);
-}
-
-void dibujarScore() {
+  juego.configInitJuego(); //<>//
+} //<>//
+ //<>//
+void draw() {     //<>//
+    opcionTecla(); //<>//
+     //<>//
+    if(juego.finDelJuego) { //<>//
+        p4_finjuego_activo = true; //<>//
+    } //<>//
+     //<>//
+    if(p1_menu_activo){//Menu Ejecutandose //<>//
+        juego.dibujarMenu(); //<>//
+    } else if(p3_juego_activo) {//Juego ejecutandose //<>//
+        if(juego.finDelJuego) //<>//
+            juego.configInitJuego(); //<>//
+        juego.correrJuego();     //<>//
+     } else if(p5_pausa_activo) {//Pausa Ejectandose //<>//
+         juego.dibujarPausa(); //<>//
+     } else if (p2_grafico_activo) { //Estadisticas o Grafico esjecutandose //<>//
+         juego.dibujarPartidasGanadas(); //<>//
+     } else if(p4_finjuego_activo) {//Fin del Juego //<>//
+         juego.dibujarFinDeJuego(); //<>//
+     } //<>// //<>// //<>// //<>// //<>//
+} //<>//
+ //<>//
+void dibujarScore() { //<>//
    textSize(32);
    text("Player1 : ", width/2, height/2);
    text("Player2 : ", width/2, height/2 + 50);
-   
-}
+    //<>//
+} //<>//
 
-
-void keyPressed() {
-  if(!juego.finDelJuego){
-     if (key == 'w')
-         juego.player1.position.y -= 20;
-    if (key == 's')
+ //<>//
+void keyPressed() { //<>//
+  if(!juego.finDelJuego){ //<>//
+     if (key == 'w') //<>//
+         juego.player1.position.y -= 20; //<>//
+    if (key == 's') //<>//
          juego.player1.position.y += 20;
     if (key == 'a')
         juego.player1.position.x -= 25;
@@ -76,4 +66,27 @@ void keyPressed() {
     if (key == 'l')
       juego.player2.position.x += 25; 
   }
+}
+
+public void opcionTecla() {
+   if(key == ' ') {
+       p1_menu_activo = false;
+       p3_juego_activo = true;
+    }
+    if(key == 'p' && p3_juego_activo){
+        p3_juego_activo = false;
+        p5_pausa_activo = true;
+    }    
+    if(key == 'm') {
+      p3_juego_activo = false;
+      p2_grafico_activo = false;
+      p1_menu_activo = true;
+      p5_pausa_activo = false;
+      p4_finjuego_activo = false;
+      juego.finDelJuego = true;
+    }
+    if(key == 'g') {
+      p1_menu_activo = false;
+      p2_grafico_activo = true;
+    } 
 }

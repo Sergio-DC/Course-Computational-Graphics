@@ -45,7 +45,6 @@ public class Grafica implements ListenerUpdatedFile{
       for(int i = 0; i < valores.size(); i++) {
           float calculo = (valores.get(i) * 100)/sumaTotal;
           float size_portion = map(calculo,0,100,0,360);
-          println(calculo);
           lista_porcentaje.add(size_portion);
       }    
       return lista_porcentaje;
