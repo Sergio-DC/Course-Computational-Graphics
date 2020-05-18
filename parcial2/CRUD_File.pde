@@ -1,5 +1,6 @@
-
-
+/**
+ * La siguiente clase realiza actividades de un CRUD basico sobre un archivo CSV
+ */
 public class CRUD_File {
     ListenerUpdatedFile listenerUpdatedFile;
     final String FILE_NAME = "squash.csv";

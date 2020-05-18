@@ -1,5 +1,9 @@
 import java.util.Observable;
-
+/**
+ * La siguente clase representa la pelota que rebota en el campo de juego, esta actua como una
+ * entidad observable que emite eventos hacia las entidades observadoras que serian los jugadores.
+ * Los eventos se dan cuando la pelota colisiona con el jugador
+ **/
 class Pelota extends Observable {
   PVector posicion;
   float diam;

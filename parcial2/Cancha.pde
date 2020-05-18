@@ -1,3 +1,6 @@
+/**
+ * La siguiente clase representa una cancha de squash
+ **/
 public class Cancha {
   float padding_x = 75;
   float padding_y_top = 20;

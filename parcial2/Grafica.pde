@@ -1,3 +1,7 @@
+/**
+ * La siguiente clase permite dibujar una grafica de pastel, aunque a largo plazo esta clase puede
+ * escalarse para soportar más tipos de graficas
+ */
 public class Grafica{
   int [] array_valores;
   PVector posicion;

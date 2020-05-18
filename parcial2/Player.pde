@@ -1,6 +1,8 @@
 import java.util.Collections;
 import java.util.Observer;
-
+/**
+ * La siguiente clase representa a un jugador, 
+ */
 class Player implements Observer{
   PVector position;
   String nombre;
